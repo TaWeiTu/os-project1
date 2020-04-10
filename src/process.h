@@ -38,7 +38,7 @@ int RunProcess(Process *process) {
   if (pri < 0) return -1;
   printf("run pri = %d\n", pri);
   struct sched_param param;
-  param.sched_priority = pri - 20;
+  param.sched_priority = pri;
   if (sched_setscheduler(process->pid, SCHED_FIFO, &param) < 0) {
     perror("RunProcess - sched_setscheduler: ");
     exit(1);
@@ -48,12 +48,15 @@ int RunProcess(Process *process) {
 }
 
 int PauseProcess(Process *process) {
-  int pri = sched_get_priority_min(SCHED_IDLE);
+  int pri = sched_get_priority_min(SCHED_FIFO);
   if (pri < 0) return -1;
   printf("pause pri = %d\n", pri);
   struct sched_param param;
   param.sched_priority = pri;
-  if (sched_setscheduler(process->pid, SCHED_IDLE, &param) < 0) return -1;
+  if (sched_setscheduler(process->pid, SCHED_FIFO, &param) < 0) {
+    perror("PauseProcess - sched_setscheduler: ");
+    exit(1);
+  }
   process->status = WAITING;
   return 0;
 }
@@ -66,8 +69,8 @@ void ForkProcess(Process *process) {
   }
   if (pid == 0) {
     struct sched_param param;
-    param.sched_priority = sched_get_priority_min(SCHED_IDLE);
-    if (sched_setscheduler(0, SCHED_IDLE, &param) < 0) {
+    param.sched_priority = sched_get_priority_min(SCHED_FIFO);
+    if (sched_setscheduler(0, SCHED_FIFO, &param) < 0) {
       perror("sched_setscheduler");
       exit(1);
     }

@@ -34,6 +34,8 @@ void DestructQueue(ProcessQueue *que) {
 
 Process *GetFront(ProcessQueue *que) {
   assert(que->size > 0);
+  assert(que->head);
+  assert(que->head->process);
   return que->head->process;
 }
 
@@ -41,13 +43,19 @@ void EnQueue(ProcessQueue *que, Process *process) {
   QueueNode *node = (QueueNode *)malloc(sizeof(QueueNode));
   node->nxt = NULL;
   node->process = process;
-  if (!que->rear) que->rear = node;
+  if (!que->rear) {
+    que->rear = node;
+  } else {
+    que->rear->nxt = node;
+    que->rear = node;
+  }
   if (!que->head) que->head = node;
   que->size++;
 }
 
 const Process *DeQueue(ProcessQueue *que) {
   assert(que->size > 0);
+  assert(que->head);
   const Process *process = que->head->process;
   QueueNode *node = que->head;
   que->head = que->head->nxt;
