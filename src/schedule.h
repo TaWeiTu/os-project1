@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <sys/wait.h>
 
+#include "heap.h"
 #include "process.h"
 #include "queue.h"
 #include "unit.h"
