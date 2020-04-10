@@ -18,6 +18,8 @@ Vector ConstructVector() {
   vec.cap = kInitCap;
 }
 
+Vector DestructVector(Vector *vec) { free(vec->process); }
+
 void PushBack(Vector *vec, Process *p) {
   if (vec->size == vec->cap) {
     vec->cap <<= 1;

@@ -3,7 +3,10 @@
 
 #include "vector.h"
 
+typedef Vector ProcessHeap;
+
 Vector ConstructHeap() { return ConstructVector(); }
+void DestructHeap(Vector *vec) { DestructVector(vec); }
 
 void HeapPush(Vector *vec, Process *process) {
   unsigned pos = vec->size;
