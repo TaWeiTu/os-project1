@@ -16,12 +16,20 @@ typedef struct {
   unsigned size;
 } ProcessQueue;
 
-ProcessQueue InitQueue() {
+ProcessQueue ConstructQueue() {
   ProcessQueue res;
   res.head = NULL;
   res.rear = NULL;
   res.size = 0;
   return res;
+}
+
+void DestructQueue(ProcessQueue *que) {
+  while (que->head != NULL) {
+    QueueNode *node = que->head;
+    que->head = que->head->nxt;
+    free(node);
+  }
 }
 
 Process *GetFront(ProcessQueue *que) {
@@ -41,7 +49,9 @@ void EnQueue(ProcessQueue *que, Process *process) {
 const Process *DeQueue(ProcessQueue *que) {
   assert(que->size > 0);
   const Process *process = que->head->process;
+  QueueNode *node = que->head;
   que->head = que->head->nxt;
+  free(node);
   que->size--;
   return process;
 }
