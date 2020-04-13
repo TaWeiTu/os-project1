@@ -10,7 +10,7 @@ void DestructHeap(Vector *vec) { DestructVector(vec); }
 
 void HeapPush(Vector *vec, Process *process) {
   unsigned pos = vec->size;
-  PushBack(vec, NULL);
+  PushBack(vec, process);
   while (pos > 0 && GetProcess(vec, (pos - 1) / 2)->exec_time >
                         GetProcess(vec, pos)->exec_time) {
     SetProcess(vec, pos, GetProcess(vec, (pos - 1) / 2));
@@ -39,7 +39,7 @@ void HeapPop(Vector *vec) {
     SetProcess(vec, pos, child);
     pos = nxt;
   }
-  SetProcess(vec, pos, last);
+  if (vec->size > 0) SetProcess(vec, pos, last);
 }
 
 #endif  // HEAP_H_

@@ -19,6 +19,7 @@ static int ScheduleFIFO(Process *process, unsigned num_process) {
   unsigned ptr = 0;
   for (unsigned t = 0; ptr < num_process || que.size > 0; t++) {
     while (ptr < num_process && process[ptr].ready_time == t) {
+      fprintf(stderr, "[FIFO] EnQueue %s\n", process[ptr].name);
       ForkProcess(&process[ptr]);
       EnQueue(&que, &process[ptr]);
       ptr++;
@@ -28,6 +29,7 @@ static int ScheduleFIFO(Process *process, unsigned num_process) {
       if (p->running_time < p->exec_time) break;
       waitpid(p->pid, NULL, 0);
       DeQueue(&que);
+      fprintf(stderr, "[FIFO] DeQueue %s\n", p->name);
     }
     if (que.size > 0) {
       if (GetFront(&que)->running_time == 0) {
@@ -47,6 +49,7 @@ static int ScheduleRR(Process *process, unsigned num_process) {
   unsigned ptr = 0;
   for (unsigned t = 0; ptr < num_process || que.size > 0; t++) {
     while (ptr < num_process && process[ptr].ready_time == t) {
+      fprintf(stderr, "[RR] EnQueue %s\n", process[ptr].name);
       ForkProcess(&process[ptr]);
       EnQueue(&que, &process[ptr]);
       ptr++;
@@ -55,11 +58,13 @@ static int ScheduleRR(Process *process, unsigned num_process) {
       const Process *p = GetFront(&que);
       if (p->running_time < p->exec_time) break;
       waitpid(p->pid, NULL, 0);
+      fprintf(stderr, "[RR] DeQueue %s\n", p->name);
       DeQueue(&que);
     }
     if (que.size > 0) {
       Process *p = GetFront(&que);
       if (p->running_time % kRoundRobin == 0 && p->status == RUNNING) {
+	fprintf(stderr, "[RR] Pause %s\n", p->name);
         PauseProcess(p);
         DeQueue(&que);
         EnQueue(&que, p);
@@ -69,6 +74,7 @@ static int ScheduleRR(Process *process, unsigned num_process) {
       Process *p = GetFront(&que);
       assert(p->running_time % kRoundRobin != 0 || p->status == WAITING);
       if (p->status == WAITING) {
+	fprintf(stderr, "[RR] Run %s\n", p->name);
         assert(RunProcess(p) == 0);
       }
       p->running_time++;
@@ -83,18 +89,21 @@ static int ScheduleSJF(Process *process, unsigned num_process) {
   ProcessHeap heap = ConstructHeap();
   unsigned ptr = 0;
   Process *running = NULL;
-  for (unsigned t = 0; ptr < num_process || heap.size > 0; t++) {
+  for (unsigned t = 0; ptr < num_process || heap.size > 0 || running; t++) {
     while (ptr < num_process && process[ptr].ready_time == t) {
+      fprintf(stderr, "[SJF] Push %s\n", process[ptr].name);
       ForkProcess(&process[ptr]);
       HeapPush(&heap, &process[ptr]);
       ptr++;
     }
     if (running && running->running_time == running->exec_time) {
       waitpid(running->pid, NULL, 0);
+      fprintf(stderr, "[SJF] wait %s\n", running->name);
       running = NULL;
     }
     if (!running && heap.size > 0) {
       Process *p = HeapGet(&heap);
+      fprintf(stderr, "[SJF] Run %s\n", p->name);
       RunProcess(p);
       running = p;
       HeapPop(&heap);

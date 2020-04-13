@@ -12,23 +12,12 @@
 
 static int ReadPolicy() {
   char policy[10];
-  scanf("%s", policy);
+  assert(scanf("%s", policy) == 1);
   if (strcmp(policy, "FIFO") == 0) return FIFO;
   if (strcmp(policy, "RR") == 0) return RR;
   if (strcmp(policy, "SJF") == 0) return SJF;
   if (strcmp(policy, "PSJF") == 0) return PSJF;
   return -1;
-}
-
-static void SetAffinity() {
-  pid_t pid = getpid();
-  cpu_set_t mask;
-  sched_getaffinity(pid, sizeof(cpu_set_t), &mask);
-  cpu_set_t set_mask;
-  CPU_ZERO(&set_mask);
-  CPU_SET(0, &set_mask);
-  sched_setaffinity(pid, sizeof(cpu_set_t), &set_mask);
-  sched_getaffinity(pid, sizeof(cpu_set_t), &mask);
 }
 
 int main() {
@@ -37,13 +26,12 @@ int main() {
     fprintf(stderr, "[Error] Unknown policy.\n");
     exit(1);
   }
-  SetAffinity();
   unsigned num_process;
-  scanf("%u", &num_process);
+  assert(scanf("%u", &num_process) == 1);
   Process *process = (Process *)malloc(num_process * sizeof(Process));
   for (unsigned i = 0; i < num_process; ++i) {
-    scanf("%s%u%u", process[i].name, &process[i].ready_time,
-          &process[i].exec_time);
+    assert(scanf("%s%u%u", process[i].name, &process[i].ready_time,
+          &process[i].exec_time) == 3);
     process[i].running_time = 0;
   }
   qsort(process, num_process, sizeof(Process), CompareProcess);

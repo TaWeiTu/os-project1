@@ -16,6 +16,7 @@ Vector ConstructVector() {
   for (unsigned i = 0; i < kInitCap; ++i) vec.process[i] = NULL;
   vec.size = 0;
   vec.cap = kInitCap;
+  return vec;
 }
 
 Vector DestructVector(Vector *vec) { free(vec->process); }

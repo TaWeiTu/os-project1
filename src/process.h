@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "utils.h"
+
 #define MAX_NAME_LENGTH 40
 
 #define RUNNING 0
@@ -36,7 +38,6 @@ int CompareProcess(const void *a, const void *b) {
 int RunProcess(Process *process) {
   int pri = sched_get_priority_max(SCHED_FIFO);
   if (pri < 0) return -1;
-  printf("run pri = %d\n", pri);
   struct sched_param param;
   param.sched_priority = pri;
   if (sched_setscheduler(process->pid, SCHED_FIFO, &param) < 0) {
@@ -50,7 +51,6 @@ int RunProcess(Process *process) {
 int PauseProcess(Process *process) {
   int pri = sched_get_priority_min(SCHED_FIFO);
   if (pri < 0) return -1;
-  printf("pause pri = %d\n", pri);
   struct sched_param param;
   param.sched_priority = pri;
   if (sched_setscheduler(process->pid, SCHED_FIFO, &param) < 0) {
@@ -68,6 +68,7 @@ void ForkProcess(Process *process) {
     exit(1);
   }
   if (pid == 0) {
+    SetAffinity(getpid());
     struct sched_param param;
     param.sched_priority = sched_get_priority_min(SCHED_FIFO);
     if (sched_setscheduler(0, SCHED_FIFO, &param) < 0) {
