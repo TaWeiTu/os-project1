@@ -77,7 +77,7 @@ void ForkProcess(Process *process) {
     }
     char buf[10];
     snprintf(buf, 10, "%u", process->exec_time);
-    execl("./job", "./job", process->name, buf, NULL);
+    execl("./bin/job", "./bin/job", process->name, buf, NULL);
   } else {
     process->pid = pid;
     process->status = WAITING;

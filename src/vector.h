@@ -45,4 +45,12 @@ void SetProcess(Vector *vec, unsigned idx, Process *process) {
   vec->process[idx] = process;
 }
 
+void SwapProcess(Vector *vec, unsigned i, unsigned j) {
+  assert(i < vec->size && j < vec->size);
+  Process *p1 = vec->process[i];
+  Process *p2 = vec->process[j];
+  vec->process[i] = p2;
+  vec->process[j] = p1;
+}
+
 #endif  // VECTOR_H_

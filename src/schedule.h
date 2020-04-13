@@ -120,7 +120,11 @@ static int SchedulePSJF(Process *process, unsigned num_process) {
   unsigned ptr = 0;
   Process *running = NULL;
   for (unsigned t = 0; ptr < num_process || heap.size > 0; t++) {
+    if (running) {
+      // fprintf(stderr, "[PSJF] t = %u running = %s\n", t, running->name);
+    }
     while (ptr < num_process && process[ptr].ready_time == t) {
+      fprintf(stderr, "[PSJF] Fork %s\n", process[ptr].name);
       ForkProcess(&process[ptr]);
       HeapPush(&heap, &process[ptr]);
       ptr++;
@@ -128,19 +132,26 @@ static int SchedulePSJF(Process *process, unsigned num_process) {
     while (heap.size > 0) {
       Process *p = HeapGet(&heap);
       if (p->running_time < p->exec_time) break;
+      assert(p == running);
+      running = NULL;
+      fprintf(stderr, "[PSJF] Wait %s\n", p->name);
       waitpid(p->pid, NULL, 0);
       HeapPop(&heap);
     }
     if (heap.size > 0) {
       Process *p = HeapGet(&heap);
       if (p->status == WAITING) {
-        if (running) PauseProcess(running);
+        if (running) {
+          fprintf(stderr, "[PSJF] Pause %s\n", running->name);
+	  PauseProcess(running);
+	}
         RunProcess(p);
       }
       running = p;
     } else {
       running = NULL;
     }
+    if (running) running->running_time++;
     Sleep(1);
   }
   DestructHeap(&heap);
