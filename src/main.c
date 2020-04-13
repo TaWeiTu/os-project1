@@ -32,7 +32,7 @@ int main() {
   for (unsigned i = 0; i < num_process; ++i) {
     assert(scanf("%s%u%u", process[i].name, &process[i].ready_time,
           &process[i].exec_time) == 3);
-    process[i].running_time = 0;
+    process[i].remaining_time = process[i].exec_time;
   }
   qsort(process, num_process, sizeof(Process), CompareProcess);
   if (Schedule(process, num_process, policy) < 0) {

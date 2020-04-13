@@ -18,7 +18,7 @@ typedef struct {
   char name[MAX_NAME_LENGTH];
   unsigned ready_time;
   unsigned exec_time;
-  unsigned running_time;
+  unsigned remaining_time;
   pid_t pid;
   int status;
 } Process;
