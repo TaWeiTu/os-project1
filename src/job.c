@@ -16,6 +16,7 @@ int main(int argc, const char **argv) {
     exit(1);
   }
   printf("%s %d\n", argv[1], (int)getpid());
+  fflush(stdout);
   struct timespec st, ed;
   syscall(GET_TIME, &st);
   unsigned exec_time = (unsigned)atoi(argv[2]);
