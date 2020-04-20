@@ -1,6 +1,11 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
+#ifdef DEBUG
+#define eprintf(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define eprintf(...) 1
+#endif
 
 void SetAffinity(pid_t pid) {
   cpu_set_t mask;

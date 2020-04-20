@@ -1,6 +1,7 @@
 #ifndef HEAP_H_
 #define HEAP_H_
 
+#include "utils.h"
 #include "vector.h"
 
 typedef Vector ProcessHeap;
@@ -17,11 +18,11 @@ void HeapPush(Vector *vec, Process *process) {
     pos = (pos - 1) / 2;
   }
   SetProcess(vec, pos, process);
-  fprintf(stderr, "[DEBUG - Push] ");
+  eprintf("[DEBUG - Push] ");
   for (unsigned i = 0; i < vec->size; ++i) {
-    fprintf(stderr, "%u ", GetProcess(vec, i)->remaining_time);
+    eprintf("%u ", GetProcess(vec, i)->remaining_time);
   }
-  fprintf(stderr, "\n");
+  eprintf("\n");
 }
 
 Process *HeapGet(Vector *vec) {
@@ -45,11 +46,11 @@ void HeapPop(Vector *vec) {
     pos = nxt;
   }
   if (vec->size > 0) SetProcess(vec, pos, last);
-  fprintf(stderr, "[DEBUG - Pop] ");
+  eprintf("[DEBUG - Pop] ");
   for (unsigned i = 0; i < vec->size; ++i) {
-    fprintf(stderr, "%u ", GetProcess(vec, i)->remaining_time);
+    eprintf("%u ", GetProcess(vec, i)->remaining_time);
   }
-  fprintf(stderr, "\n");
+  eprintf("\n");
 }
 
 #endif  // HEAP_H_
