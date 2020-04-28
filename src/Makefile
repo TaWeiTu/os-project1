@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O3 # -DNDEBUG # -DDEBUG
+CFLAGS = -O3 # -DDEBUG
 
 all: main job
 

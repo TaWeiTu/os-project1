@@ -12,7 +12,7 @@
 
 static int ReadPolicy() {
   char policy[10];
-  scanf("%s", policy);
+  assert(scanf("%s", policy) == 1);
   if (strcmp(policy, "FIFO") == 0) return FIFO;
   if (strcmp(policy, "RR") == 0) return RR;
   if (strcmp(policy, "SJF") == 0) return SJF;
@@ -33,6 +33,7 @@ int main() {
     assert(scanf("%s%u%u", process[i].name, &process[i].ready_time,
           &process[i].exec_time) == 3);
     process[i].remaining_time = process[i].exec_time;
+    assert(process[i].exec_time > 0);
   }
   qsort(process, num_process, sizeof(Process), CompareProcess);
   if (Schedule(process, num_process, policy) < 0) {
