@@ -12,7 +12,7 @@
 
 static int ReadPolicy() {
   char policy[10];
-  assert(scanf("%s", policy) == 1);
+  scanf("%s", policy);
   if (strcmp(policy, "FIFO") == 0) return FIFO;
   if (strcmp(policy, "RR") == 0) return RR;
   if (strcmp(policy, "SJF") == 0) return SJF;
